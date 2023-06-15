@@ -172,7 +172,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
 
     admin_ssh_key {
         username       = "azureuser"
-        public_key     = file("/key/id_rsa.pub")
+        public_key     = tls_private_key.example_ssh.public_key_openssh
     }
 
     boot_diagnostics {
@@ -187,7 +187,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
         host = self.public_ip_address
         user = "azureuser"
         type = "ssh"
-        private_key = file("key/id_rsa")
+        private_key = tls_private_key.example_ssh.public_key_openssh
         timeout = "4m"
         agent = false
     }
