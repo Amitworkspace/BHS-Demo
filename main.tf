@@ -22,22 +22,22 @@ terraform {
   }
 }
 
-# Create a resource group if it doesn't exist
-resource "azurerm_resource_group" "myterraformgroup" {
-    name     = "BHSDemo"
-    location = "us-east"
+# # Create a resource group if it doesn't exist
+# resource "azurerm_resource_group" "myterraformgroup" {
+#     name     = "BHSDemo"
+#     location = "us-east"
 
-    tags = {
-        environment = "Terraform Demo"
-    }
-}
+#     tags = {
+#         environment = "Terraform Demo"
+#     }
+# }
 
 # Create virtual network
 resource "azurerm_virtual_network" "myterraformnetwork" {
     name                = "myVnet"
     address_space       = ["10.0.0.0/16"]
     location            = "us-east"
-    resource_group_name = azurerm_resource_group.myterraformgroup.name
+    resource_group_name = "BHSDemo"
 
     tags = {
         environment = "Terraform Demo"
@@ -47,7 +47,7 @@ resource "azurerm_virtual_network" "myterraformnetwork" {
 # Create subnet
 resource "azurerm_subnet" "myterraformsubnet" {
     name                 = "mySubnet"
-    resource_group_name  = azurerm_resource_group.myterraformgroup.name
+    resource_group_name  = "BHSDemo"
     virtual_network_name = azurerm_virtual_network.myterraformnetwork.name
     address_prefixes       = ["10.0.1.0/24"]
 }
@@ -91,7 +91,7 @@ resource "azurerm_network_security_group" "myterraformnsg" {
 resource "azurerm_network_interface" "myterraformnic" {
     name                      = "myNIC"
     location                  = "us-east"
-    resource_group_name       = azurerm_resource_group.myterraformgroup.name
+    resource_group_name       = "BHSDemo"
 
     ip_configuration {
         name                          = "myNicConfiguration"
@@ -115,7 +115,7 @@ resource "azurerm_network_interface_security_group_association" "example" {
 resource "random_id" "randomId" {
     keepers = {
         # Generate a new ID only when a new resource group is defined
-        resource_group = azurerm_resource_group.myterraformgroup.name
+        resource_group = "BHSDemo"
     }
 
     byte_length = 8
@@ -124,7 +124,7 @@ resource "random_id" "randomId" {
 # Create storage account for boot diagnostics
 resource "azurerm_storage_account" "mystorageaccount" {
     name                        = "diag${random_id.randomId.hex}"
-    resource_group_name         = azurerm_resource_group.myterraformgroup.name
+    resource_group_name         = "BHSDemo"
     location                    = "us-east"
     account_tier                = "Standard"
     account_replication_type    = "LRS"
@@ -148,7 +148,7 @@ output "tls_private_key" {
 resource "azurerm_linux_virtual_machine" "myterraformvm" {
     name                  = "myVM"
     location              = "us-east"
-    resource_group_name   = azurerm_resource_group.myterraformgroup.name
+    resource_group_name   = "BHSDemo"
     network_interface_ids = [azurerm_network_interface.myterraformnic.id]
     size                  = "Standard_DS1_v2"
 
