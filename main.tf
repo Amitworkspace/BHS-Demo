@@ -25,8 +25,8 @@ terraform {
 resource "azurerm_virtual_network" "myterraformnetwork" {
     name                = "myVnet"
     address_space       = ["10.0.0.0/16"]
-    location            = "eastus"
-    resource_group_name = azurerm_resource_group.myterraformgroup.name
+    location            = "us-east"
+    resource_group_name = "BHSDemo"
 
     tags = {
         environment = "Terraform Demo"
@@ -36,7 +36,7 @@ resource "azurerm_virtual_network" "myterraformnetwork" {
 # Create subnet
 resource "azurerm_subnet" "myterraformsubnet" {
     name                 = "mySubnet"
-    resource_group_name  = azurerm_resource_group.myterraformgroup.name
+    resource_group_name  = "BHSDemo"
     virtual_network_name = azurerm_virtual_network.myterraformnetwork.name
     address_prefixes       = ["10.0.1.0/24"]
 }
@@ -44,8 +44,8 @@ resource "azurerm_subnet" "myterraformsubnet" {
 # Create public IPs
 resource "azurerm_public_ip" "myterraformpublicip" {
     name                         = "myPublicIP"
-    location                     = "eastus"
-    resource_group_name          = azurerm_resource_group.myterraformgroup.name
+    location                     = "us-east"
+    resource_group_name          = "BHSDemo"
     allocation_method            = "Dynamic"
 
     tags = {
@@ -56,8 +56,8 @@ resource "azurerm_public_ip" "myterraformpublicip" {
 # Create Network Security Group and rule
 resource "azurerm_network_security_group" "myterraformnsg" {
     name                = "myNetworkSecurityGroup"
-    location            = "eastus"
-    resource_group_name = azurerm_resource_group.myterraformgroup.name
+    location            = "us-east"
+    resource_group_name = "BHSDemo"
 
     security_rule {
         name                       = "SSH"
@@ -79,8 +79,8 @@ resource "azurerm_network_security_group" "myterraformnsg" {
 # Create network interface
 resource "azurerm_network_interface" "myterraformnic" {
     name                      = "myNIC"
-    location                  = "eastus"
-    resource_group_name       = azurerm_resource_group.myterraformgroup.name
+    location                  = "us-east"
+    resource_group_name       = "BHSDemo"
 
     ip_configuration {
         name                          = "myNicConfiguration"
@@ -100,29 +100,6 @@ resource "azurerm_network_interface_security_group_association" "example" {
     network_security_group_id = azurerm_network_security_group.myterraformnsg.id
 }
 
-# Generate random text for a unique storage account name
-resource "random_id" "randomId" {
-    keepers = {
-        # Generate a new ID only when a new resource group is defined
-        resource_group = azurerm_resource_group.myterraformgroup.name
-    }
-
-    byte_length = 8
-}
-
-# Create storage account for boot diagnostics
-resource "azurerm_storage_account" "mystorageaccount" {
-    name                        = "diag${random_id.randomId.hex}"
-    resource_group_name         = azurerm_resource_group.myterraformgroup.name
-    location                    = "eastus"
-    account_tier                = "Standard"
-    account_replication_type    = "LRS"
-
-    tags = {
-        environment = "Terraform Demo"
-    }
-}
-
 # Create (and display) an SSH key
 resource "tls_private_key" "example_ssh" {
   algorithm = "RSA"
@@ -136,11 +113,11 @@ output "tls_private_key" {
 # Create virtual machine
 resource "azurerm_linux_virtual_machine" "myterraformvm" {
     name                  = "myVM"
-    location              = "eastus"
-    resource_group_name   = azurerm_resource_group.myterraformgroup.name
+    location              = "us-east"
+    resource_group_name   = "BHSDemo"
     network_interface_ids = [azurerm_network_interface.myterraformnic.id]
     size                  = "Standard_DS1_v2"
-
+}
     os_disk {
         name              = "myOsDisk"
         caching           = "ReadWrite"
@@ -163,13 +140,6 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
         public_key     = file("~/.ssh/id_rsa.pub")
     }
 
-    boot_diagnostics {
-        storage_account_uri = azurerm_storage_account.mystorageaccount.primary_blob_endpoint
-    }
-
-    tags = {
-        environment = "Terraform Demo"
-    }
 	    
 	connection {
         host = self.public_ip_address
@@ -179,17 +149,12 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
         timeout = "4m"
         agent = false
     }
-	
-	provisioner "file" {
-        source = "example_file.txt"
-        destination = "/tmp/example_file.txt"
-    }
-
     provisioner "remote-exec" {
         inline = [
           "sudo apt-get update",
           "sudo apt-get install docker.io -y",
-          "git clone https://github.com/devopsschool-training-notes/terraform-ey-june-2021",
-          "sudo docker run -d -p 80:80 httpd"
+          "sudo docker run -d -p 80:80 -name=nginx nginx",
+          "sudo docker exec -it nginx /bin/bash/",
+          "echo 'Hello BHS'> /var/www/html/index.html"
         ]
     }
