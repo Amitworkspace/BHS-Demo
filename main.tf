@@ -151,6 +151,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
     resource_group_name   = azurerm_resource_group.myterraformgroup.name
     network_interface_ids = [azurerm_network_interface.myterraformnic.id]
     size                  = "Standard_DS1_v2"
+}
 
     os_disk {
         name              = "myOsDisk"
