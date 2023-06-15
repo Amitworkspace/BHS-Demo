@@ -186,7 +186,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
         host = self.public_ip_address
         user = "azureuser"
         type = "ssh"
-        private_key = "${file("~/.ssh/id_rsa")}"
+        private_key = file("~/.ssh/id_rsa")
         timeout = "4m"
         agent = false
     }
@@ -199,7 +199,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
     provisioner "remote-exec" {
         inline = [
           "sudo apt-get update",
-          "sudo apt-get install docker.io -y"
-          "sudo docker run -d -p 80:80 httpd"
+          "sudo apt-get install docker.io -y",
+          "sudo docker run -d -p 80:80 httpd",
         ]
     }
