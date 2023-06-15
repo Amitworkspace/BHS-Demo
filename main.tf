@@ -34,7 +34,7 @@ provider "azurerm" {
 
 # Create virtual network
 resource "azurerm_virtual_network" "myterraformnetwork" {
-    name                = "myVnet"
+    name                = "myvnet"
     address_space       = ["10.0.0.0/16"]
     location            = "east us"
     resource_group_name = "BHSDemo"
@@ -54,7 +54,7 @@ resource "azurerm_subnet" "myterraformsubnet" {
 
 # Create public IPs
 resource "azurerm_public_ip" "myterraformpublicip" {
-    name                         = "myPublicIP"
+    name                         = "mypublicIP"
     location                     = "east us"
     resource_group_name          = "BHSDemo"
     allocation_method            = "Dynamic"
