@@ -191,17 +191,14 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
         timeout = "4m"
         agent = false
     }
-	
-	provisioner "file" {
-        source = "example_file.txt"
-        destination = "/tmp/example_file.txt"
-    }
 
     provisioner "remote-exec" {
         inline = [
           "sudo apt-get update",
           "sudo apt-get install docker.io -y",
-          "sudo docker run -d -p 80:80 httpd",
+          "sudo docker run -d -p 80:80 -name=nginx nginx",
+          "sudo docker exec -it nginx /bin/bash/",
+          "echo 'Hello BHS'> /var/www/html/index.html"
         ]
     }
 }
