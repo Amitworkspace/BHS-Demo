@@ -13,14 +13,14 @@ provider "azurerm" {
   features {}
 }
 
-terraform {
-  backend "azurerm" {
-    resource_group_name  = "BHSDemo"
-    storage_account_name = "bhsdemostorage"
-    container_name       = "tfstatefile"
-    key                  = "prod.terraform.tfstate"
-  }
-}
+# terraform {
+#   backend "azurerm" {
+#     resource_group_name  = "BHSDemo"
+#     storage_account_name = "bhsdemostorage"
+#     container_name       = "tfstatefile"
+#     key                  = "prod.terraform.tfstate"
+#   }
+# }
 
 # # Create a resource group if it doesn't exist
 # resource "azurerm_resource_group" "myterraformgroup" {
