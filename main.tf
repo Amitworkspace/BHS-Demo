@@ -25,7 +25,7 @@ provider "azurerm" {
 # # Create a resource group if it doesn't exist
 # resource "azurerm_resource_group" "myterraformgroup" {
 #     name     = "BHSDemo"
-#     location = "us-east"
+#     location = "east us"
 
 #     tags = {
 #         environment = "Terraform Demo"
@@ -36,7 +36,7 @@ provider "azurerm" {
 resource "azurerm_virtual_network" "myterraformnetwork" {
     name                = "myVnet"
     address_space       = ["10.0.0.0/16"]
-    location            = "us-east"
+    location            = "east us"
     resource_group_name = "BHSDemo"
 
     tags = {
@@ -55,7 +55,7 @@ resource "azurerm_subnet" "myterraformsubnet" {
 # Create public IPs
 resource "azurerm_public_ip" "myterraformpublicip" {
     name                         = "myPublicIP"
-    location                     = "us-east"
+    location                     = "east us"
     resource_group_name          = "BHS"
     allocation_method            = "Dynamic"
 
@@ -67,7 +67,7 @@ resource "azurerm_public_ip" "myterraformpublicip" {
 # Create Network Security Group and rule
 resource "azurerm_network_security_group" "myterraformnsg" {
     name                = "myNetworkSecurityGroup"
-    location            = "us-east"
+    location            = "east us"
     resource_group_name = "BHSDemo"
 
     security_rule {
@@ -90,7 +90,7 @@ resource "azurerm_network_security_group" "myterraformnsg" {
 # Create network interface
 resource "azurerm_network_interface" "myterraformnic" {
     name                      = "myNIC"
-    location                  = "us-east"
+    location                  = "east us"
     resource_group_name       = "BHSDemo"
 
     ip_configuration {
@@ -125,7 +125,7 @@ resource "random_id" "randomId" {
 resource "azurerm_storage_account" "mystorageaccount" {
     name                        = "diag${random_id.randomId.hex}"
     resource_group_name         = "BHSDemo"
-    location                    = "us-east"
+    location                    = "east us"
     account_tier                = "Standard"
     account_replication_type    = "LRS"
 
@@ -147,7 +147,7 @@ output "tls_private_key" {
 # Create virtual machine
 resource "azurerm_linux_virtual_machine" "myterraformvm" {
     name                  = "myVM"
-    location              = "us-east"
+    location              = "east us"
     resource_group_name   = "BHSDemo"
     network_interface_ids = [azurerm_network_interface.myterraformnic.id]
     size                  = "Standard_DS1_v2"
