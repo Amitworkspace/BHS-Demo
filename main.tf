@@ -56,7 +56,7 @@ resource "azurerm_subnet" "myterraformsubnet" {
 resource "azurerm_public_ip" "myterraformpublicip" {
     name                         = "myPublicIP"
     location                     = "us-east"
-    resource_group_name          = azurerm_resource_group.myterraformgroup.name
+    resource_group_name          = "BHS"
     allocation_method            = "Dynamic"
 
     tags = {
@@ -68,7 +68,7 @@ resource "azurerm_public_ip" "myterraformpublicip" {
 resource "azurerm_network_security_group" "myterraformnsg" {
     name                = "myNetworkSecurityGroup"
     location            = "us-east"
-    resource_group_name = azurerm_resource_group.myterraformgroup.name
+    resource_group_name = "BHSDemo"
 
     security_rule {
         name                       = "SSH"
