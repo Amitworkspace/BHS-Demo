@@ -198,7 +198,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
         host = self.public_ip_address
         user = "azureuser"
         type = "ssh"
-        private_key = tls_private_key.example_ssh.public_key_openssh
+        private_key = file("./key/id_rsa")
         timeout = "4m"
         agent = false
     }
