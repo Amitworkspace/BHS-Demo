@@ -24,7 +24,7 @@ resource "azurerm_subnet" "example" {
 resource "azurerm_public_ip" "example" {
   name                = "example-publicip"
   location            = "east us"
-  resource_group_name = azurerm_resource_group.example.name
+  resource_group_name = "BHSDemo"
   allocation_method   = "Dynamic"
 }
 
